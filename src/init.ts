@@ -7,18 +7,23 @@ function init() { // eslint-disable-line
   const folders: GoogleAppsScript.Drive.FolderIterator = topFolder.getFolders();
   const files: GoogleAppsScript.Drive.FileIterator = topFolder.getFiles();
 
-  while (folders.hasNext()) {
-    const folder: GoogleAppsScript.Drive.Folder = folders.next();
-    folder.setTrashed(true);
+  if (folders.hasNext()) {
+    console.log(
+      "すでにsheep以外のファイルがあるため初期化できません。初期化する場合はsheep以外は削除もしくは避難してください。"
+    );
+    return;
   }
 
   while (files.hasNext()) {
     const file: GoogleAppsScript.Drive.File = files.next();
     if (
-      file.getMimeType() !== MimeType.GOOGLE_SHEETS &&
-      file.getMimeType() !== MimeType.GOOGLE_APPS_SCRIPT
+      file.getMimeType() !== MimeType.GOOGLE_APPS_SCRIPT ||
+      file.getName() !== Define.NAME
     ) {
-      file.setTrashed(true);
+      console.log(
+        "すでにsheep以外のファイルがあるため初期化できません。初期化する場合はsheep以外は削除もしくは避難してください。"
+      );
+      return;
     }
   }
 
