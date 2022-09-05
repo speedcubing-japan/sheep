@@ -1,4 +1,5 @@
 namespace Define { // eslint-disable-line
+  // 以下は変更必要です
   // フォルダID
   export const DEFAULT_FOLDER_ID = "19HVEGwLgpsHNL2Wxbd43JU61jhMAYHde";
   // 大会名
@@ -6,7 +7,9 @@ namespace Define { // eslint-disable-line
   // 開催日数
   export const HOLDING_DAYS = 1;
 
-  // 以下は基本変更不要
+  // 以下は基本変更不要です
+  export const ORIGIN_FOLDER_ID = "19HVEGwLgpsHNL2Wxbd43JU61jhMAYHde";
+
   export const SPREADSHEET_FILE_NAME = "competition";
   export const SCORESHEET_FOLDER_NAME = "scoresheet";
   export const SCORESHEET_OUTPUT_FOLDER_NAME = "output_scoresheet";

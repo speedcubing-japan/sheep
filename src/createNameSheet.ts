@@ -1,10 +1,19 @@
 function createNameSheet() { // eslint-disable-line
   const spreadsheetFile: GoogleAppsScript.Drive.File =
-    Service.getFileFromTopFiles(Define.SPREADSHEET_FILE_NAME);
+    Service.getFileFromTopFiles(
+      Define.SPREADSHEET_FILE_NAME,
+      Define.DEFAULT_FOLDER_ID
+    );
   const namesheetFolder: GoogleAppsScript.Drive.Folder =
-    Service.getFolderFromTopFolders(Define.NAMESHEET_FOLDER_NAME);
+    Service.getFolderFromTopFolders(
+      Define.NAMESHEET_FOLDER_NAME,
+      Define.DEFAULT_FOLDER_ID
+    );
   let outputFolder: GoogleAppsScript.Drive.Folder =
-    Service.getFolderFromTopFolders(Define.NAMESHEET_OUTPUT_FOLDER_NAME);
+    Service.getFolderFromTopFolders(
+      Define.NAMESHEET_OUTPUT_FOLDER_NAME,
+      Define.DEFAULT_FOLDER_ID
+    );
   const namesheetFile: GoogleAppsScript.Drive.File = Service.getFileFromFolder(
     Define.NAMESHEET_FILE_NAME,
     namesheetFolder

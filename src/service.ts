@@ -1,46 +1,53 @@
 namespace Service { // eslint-disable-line
   export function getFileFromTopFiles(
-    fileName: string
+    fileName: string,
+    folderId: string
   ): GoogleAppsScript.Drive.File {
-    const currentFolder: GoogleAppsScript.Drive.Folder = DriveApp.getFolderById(
-      Define.DEFAULT_FOLDER_ID
-    );
+    const currentFolder: GoogleAppsScript.Drive.Folder =
+      DriveApp.getFolderById(folderId);
     return getFileFromFolder(fileName, currentFolder);
   }
 
   export function getFolderFromTopFolders(
-    folderName: string
+    folderName: string,
+    folderId: string
   ): GoogleAppsScript.Drive.Folder {
-    const currentFolder: GoogleAppsScript.Drive.Folder = DriveApp.getFolderById(
-      Define.DEFAULT_FOLDER_ID
-    );
-    const topFolders: GoogleAppsScript.Drive.FolderIterator =
+    const currentFolder: GoogleAppsScript.Drive.Folder =
+      DriveApp.getFolderById(folderId);
+    const folders: GoogleAppsScript.Drive.FolderIterator =
       currentFolder.getFolders();
-    let folder!: GoogleAppsScript.Drive.Folder;
-    while (topFolders.hasNext()) {
-      const tmpFolder: GoogleAppsScript.Drive.Folder = topFolders.next();
-      if (tmpFolder.getName() === folderName) {
-        folder = tmpFolder;
-        break;
-      }
-    }
-    return folder;
+    return getFolderFromFolders(folderName, folders);
   }
 
   export function getFileFromFolder(
     fileName: string,
     folder: GoogleAppsScript.Drive.Folder
   ): GoogleAppsScript.Drive.File {
-    const topFiles: GoogleAppsScript.Drive.FileIterator = folder.getFiles();
+    const files: GoogleAppsScript.Drive.FileIterator = folder.getFiles();
     let file!: GoogleAppsScript.Drive.File;
-    while (topFiles.hasNext()) {
-      const tmpFile: GoogleAppsScript.Drive.File = topFiles.next();
+    while (files.hasNext()) {
+      const tmpFile: GoogleAppsScript.Drive.File = files.next();
       if (tmpFile.getName() === fileName) {
         file = tmpFile;
         break;
       }
     }
     return file;
+  }
+
+  export function getFolderFromFolders(
+    folderName: string,
+    folders: GoogleAppsScript.Drive.FolderIterator
+  ): GoogleAppsScript.Drive.Folder {
+    let folder!: GoogleAppsScript.Drive.Folder;
+    while (folders.hasNext()) {
+      const tmpFolder: GoogleAppsScript.Drive.Folder = folders.next();
+      if (tmpFolder.getName() === folderName) {
+        folder = tmpFolder;
+        break;
+      }
+    }
+    return folder;
   }
 
   export function createFolder(
@@ -50,6 +57,31 @@ namespace Service { // eslint-disable-line
       Define.DEFAULT_FOLDER_ID
     );
     return currentFolder.createFolder(folderName);
+  }
+
+  export function copyFolder(
+    folder: GoogleAppsScript.Drive.Folder,
+    originFolder: GoogleAppsScript.Drive.Folder
+  ): void {
+    const originFiles: GoogleAppsScript.Drive.FileIterator =
+      originFolder.getFiles();
+    while (originFiles.hasNext()) {
+      const originFile: GoogleAppsScript.Drive.File = originFiles.next();
+      if (originFile.getMimeType() !== MimeType.GOOGLE_APPS_SCRIPT) {
+        originFile.makeCopy(originFile.getName(), folder);
+      }
+    }
+
+    const originFolders: GoogleAppsScript.Drive.FolderIterator =
+      originFolder.getFolders();
+
+    while (originFolders.hasNext()) {
+      const originFolder: GoogleAppsScript.Drive.Folder = originFolders.next();
+      const targetFolder: GoogleAppsScript.Drive.Folder = folder.createFolder(
+        originFolder.getName()
+      );
+      copyFolder(targetFolder, originFolder);
+    }
   }
 
   export function getCompetitorData(

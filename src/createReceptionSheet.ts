@@ -1,6 +1,9 @@
 function createReceptionSheet() { // eslint-disable-line
   const spreadsheetFile: GoogleAppsScript.Drive.File =
-    Service.getFileFromTopFiles(Define.SPREADSHEET_FILE_NAME);
+    Service.getFileFromTopFiles(
+      Define.SPREADSHEET_FILE_NAME,
+      Define.DEFAULT_FOLDER_ID
+    );
 
   if (spreadsheetFile == null) {
     console.log("spreadsheetのファイル名がcompetitionではありません");

@@ -1,10 +1,19 @@
 function convertPDF() { // eslint-disable-line
   const outputScoresheetFolder: GoogleAppsScript.Drive.Folder =
-    Service.getFolderFromTopFolders(Define.SCORESHEET_OUTPUT_FOLDER_NAME);
+    Service.getFolderFromTopFolders(
+      Define.SCORESHEET_OUTPUT_FOLDER_NAME,
+      Define.DEFAULT_FOLDER_ID
+    );
   const outputNamesheetFolder: GoogleAppsScript.Drive.Folder =
-    Service.getFolderFromTopFolders(Define.NAMESHEET_OUTPUT_FOLDER_NAME);
+    Service.getFolderFromTopFolders(
+      Define.NAMESHEET_OUTPUT_FOLDER_NAME,
+      Define.DEFAULT_FOLDER_ID
+    );
   let outputPDFFolder: GoogleAppsScript.Drive.Folder =
-    Service.getFolderFromTopFolders(Define.PDF_OUTPUT_FOLDER_NAME);
+    Service.getFolderFromTopFolders(
+      Define.PDF_OUTPUT_FOLDER_NAME,
+      Define.DEFAULT_FOLDER_ID
+    );
 
   // 存在したら削除
   if (outputPDFFolder != null) {
