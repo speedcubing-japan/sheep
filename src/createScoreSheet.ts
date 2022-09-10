@@ -144,7 +144,12 @@ function createScoreSheet() { // eslint-disable-line
         slide.replaceAllText("round", roundData[roundId].round_name);
         slide.replaceAllText("group", roundData[roundId].group_name);
         slide.replaceAllText("event_name", eventData[eventId].event_name);
-        slide.replaceAllText("wca_name", value.name);
+        if (isWCA) {
+          slide.replaceAllText("wca_name", value.name);
+        } else {
+          slide.replaceAllText("rome_name", value.full_name_rome);
+          slide.replaceAllText("full_name", value.full_name);
+        }
         slide.replaceAllText("kana_name", value.full_name_kana);
         slide.replaceAllText(
           "sequence",

@@ -95,7 +95,12 @@ function createAssignmentSheet() { // eslint-disable-line
 
       const infos: string[] = [];
       for (const key of Object.keys(baseHeaderInfo)) {
-        infos.push(value[key]);
+        // SCJ大会はnameだけではふりがながないためWCAの氏名に統一する
+        if (!isWCA && key === "name") {
+          infos.push(value.full_name_rome + " (" + value.full_name + ")");
+        } else {
+          infos.push(value[key]);
+        }
       }
 
       for (const key of competitorKeys) {

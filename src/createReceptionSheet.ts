@@ -39,6 +39,8 @@ function createReceptionSheet() { // eslint-disable-line
       continue;
     }
 
+    const isWCA: boolean = Service.isWCACompetition(competitorData);
+
     // 名前でソート
     const competitorInfoList: { [key: string]: string }[] = Object.values(
       competitorData
@@ -49,20 +51,23 @@ function createReceptionSheet() { // eslint-disable-line
     });
 
     let headerList: string[] = [];
+
+    let baseHeaderInfo: { [key: string]: string } = {};
+    if (isWCA) {
+      baseHeaderInfo = Define.SPREADSHEET_RECEPTION_WCA_BASE_HEADER_INFO;
+    } else {
+      baseHeaderInfo = Define.SPREADSHEET_RECEPTION_SCJ_BASE_HEADER_INFO;
+    }
     // ベース情報追加
-    Object.keys(Define.SPREADSHEET_RECEPTION_BASE_HEADER_INFO).forEach(
-      (key) => {
-        headerList.push(Define.SPREADSHEET_RECEPTION_BASE_HEADER_INFO[key]);
-      }
-    );
+    Object.keys(baseHeaderInfo).forEach((key) => {
+      headerList.push(baseHeaderInfo[key]);
+    });
     headerList = headerList.concat(Define.SPREADSHEET_RECEPTION_HEADER_INFO);
 
     receptionSheet.appendRow(headerList);
     for (const competitorInfo of competitorInfoList) {
       const infos: string[] = [];
-      for (const key of Object.keys(
-        Define.SPREADSHEET_RECEPTION_BASE_HEADER_INFO
-      )) {
+      for (const key of Object.keys(baseHeaderInfo)) {
         infos.push(competitorInfo[key]);
       }
       receptionSheet.appendRow(infos);
@@ -79,18 +84,19 @@ function createReceptionSheet() { // eslint-disable-line
       false
     );
 
+    let baseHeaderSizeInfo: { [key: string]: number } = {};
+    if (isWCA) {
+      baseHeaderSizeInfo = Define.SPREADSHEET_RECEPTION_WCA_BASE_HEADER_SIZE;
+    } else {
+      baseHeaderSizeInfo = Define.SPREADSHEET_RECEPTION_SCJ_BASE_HEADER_SIZE;
+    }
     // リサイズ
-    Object.keys(Define.SPREADSHEET_RECEPTION_BASE_HEADER_SIZE).forEach(
-      (key) => {
-        const columnIndex: number = headerList.indexOf(key) + 1;
-        if (receptionSheet != null) {
-          receptionSheet.setColumnWidth(
-            columnIndex,
-            Define.SPREADSHEET_RECEPTION_BASE_HEADER_SIZE[key]
-          );
-        }
+    Object.keys(baseHeaderSizeInfo).forEach((key) => {
+      const columnIndex: number = headerList.indexOf(key) + 1;
+      if (receptionSheet != null) {
+        receptionSheet.setColumnWidth(columnIndex, baseHeaderSizeInfo[key]);
       }
-    );
+    });
 
     console.log(sheetName + " Complete.");
   }

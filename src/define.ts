@@ -75,7 +75,7 @@ namespace Define { // eslint-disable-line
 
   export const SPREADSHEET_RECEPTION_SHEET_NAME = "reception";
   export const SPREADSHEET_RECEPTION_SHEET_INDEX = 999; // 基本最後に追加されるように
-  export const SPREADSHEET_RECEPTION_BASE_HEADER_INFO: {
+  export const SPREADSHEET_RECEPTION_WCA_BASE_HEADER_INFO: {
     [key: string]: string;
   } = {
     id: "番号",
@@ -84,15 +84,35 @@ namespace Define { // eslint-disable-line
     full_name_kana: "カナ",
     guest_count: "同伴者数",
   };
+  export const SPREADSHEET_RECEPTION_SCJ_BASE_HEADER_INFO: {
+    [key: string]: string;
+  } = {
+    id: "番号",
+    scj_id: "SCJID",
+    full_name: "名前",
+    full_name_kana: "カナ",
+    guest_count: "同伴者数",
+  };
   export const SPREADSHEET_RECEPTION_HEADER_INFO: string[] = [
     "受付チェック",
     "備考",
   ];
-  export const SPREADSHEET_RECEPTION_BASE_HEADER_SIZE: {
+  export const SPREADSHEET_RECEPTION_WCA_BASE_HEADER_SIZE: {
     [key: string]: number;
   } = {
     番号: 100,
     WCAID: 100,
+    名前: 250,
+    カナ: 200,
+    同伴者数: 100,
+    受付チェック: 200,
+    備考: 200,
+  };
+  export const SPREADSHEET_RECEPTION_SCJ_BASE_HEADER_SIZE: {
+    [key: string]: number;
+  } = {
+    番号: 100,
+    SCJID: 100,
     名前: 250,
     カナ: 200,
     同伴者数: 100,
