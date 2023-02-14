@@ -15,9 +15,13 @@ namespace Define { // eslint-disable-line
   export const SCORESHEET_FOLDER_NAME = "scoresheet";
   export const SCORESHEET_OUTPUT_FOLDER_NAME = "output_scoresheet";
 
+  export const NAMESHEET_FILE_NAME = "namesheet";
   export const NAMESHEET_FOLDER_NAME = "namesheet";
   export const NAMESHEET_OUTPUT_FOLDER_NAME = "output_namesheet";
-  export const NAMESHEET_FILE_NAME = "namesheet";
+
+  export const CERTIFICATE_FOLDER_NAME = "certificate";
+  export const CERTIFICATE_OUTPUT_FOLDER_NAME = "output_certificate";
+  export const SCORE_CERTIFICATE_FILE_NAME = "score_certificate";
 
   export const PDF_OUTPUT_FOLDER_NAME = "output_pdf";
 
@@ -34,7 +38,13 @@ namespace Define { // eslint-disable-line
     "スクランブラ",
   ];
 
+  export const AVERAGE_OF_5_ATTEMPT_COUNT = 5;
+  export const MEAN_OF_3_ATTEMPT_COUNT = 3;
+  export const BEST_OF_3_ATTEMPT_COUNT = 3;
+  export const BEST_OF_1_ATTEMPT_COUNT = 1;
+
   export const SPREADSHEET_COMPETITOR_NAME = "competitor";
+  export const SPREADSHEET_RESULT_NAME = "result";
   export const SPREADSHEET_EVENT_NAME = "event";
   export const SPREADSHEET_ROUND_NAME = "round";
 
