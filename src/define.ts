@@ -1,15 +1,23 @@
 namespace Define { // eslint-disable-line
   // 以下は変更必要です
   // フォルダID
-  export const DEFAULT_FOLDER_ID = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+  export const DEFAULT_FOLDER_ID = "XXXXXXXXXXXXXXXXXXXXXXXXX";
   // 大会名
   export const COMPETITION_NAME = "XXX";
   // 開催日数
   export const HOLDING_DAYS = 1;
 
+  // 以下は記録証書を作るときに変更が必要です。
+  // WCA LIVE 大会ID
+  export const WCA_LIVE_COMPETITION_ID = 0;
+  // 記録証出力種目
+  export const CERTIFICATE_EVENT_ID = "333";
+
   // 以下は基本変更不要です
   export const NAME = "sheep";
   export const ORIGIN_FOLDER_ID = "19HVEGwLgpsHNL2Wxbd43JU61jhMAYHde";
+  export const WCA_LIVE_ENDPOINT_URL =
+    "https://live.worldcubeassociation.org/api";
 
   export const SPREADSHEET_FILE_NAME = "competition";
   export const SCORESHEET_FOLDER_NAME = "scoresheet";

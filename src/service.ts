@@ -307,4 +307,97 @@ namespace Service { // eslint-disable-line
     });
     return isWca;
   }
+
+  export function getWcaLiveFinalResults() {
+    const results = queryGQL(Query.RESULT, {
+      id: Define.WCA_LIVE_COMPETITION_ID,
+    });
+
+    if (results.data.competition === null) {
+      return undefined;
+    }
+
+    const competitionEvents = results.data.competition.competitionEvents;
+    const eventResults: { [name: string]: any } = {}; // eslint-disable-line
+    for (const competitionEvent of competitionEvents) {
+      for (const competitionRound of competitionEvent.rounds) {
+        if (competitionRound.name === "Final") {
+          eventResults[competitionEvent.event.id] = competitionRound.results;
+        }
+      }
+    }
+
+    return eventResults;
+  }
+
+  export function convertRecord(eventId: string, record: number): string {
+    if (record === 0) {
+      return "";
+    }
+    if (record === -1) {
+      return "DNF";
+    }
+    if (record === -2) {
+      return "DNS";
+    }
+
+    // MBLD, FMC, その他で切り分ける
+    const recordString = String(record);
+
+    if (eventId === "333mbf") {
+      const missed = record % 100;
+      const points = 99 - (Math.floor(record / 1e7) % 100);
+      const solved = points + missed;
+      const attempted = solved + missed;
+      const allSeconds = Math.floor(record / 100) % 1e5;
+      const minutes = Math.floor(allSeconds / 60);
+      const seconds = allSeconds - minutes * 60;
+
+      return (
+        solved +
+        "/" +
+        attempted +
+        " " +
+        minutes +
+        ":" +
+        String(seconds).padStart(2, "0")
+      );
+    }
+
+    // FMCは100手以上はないと信じたいがあると困るのでeventIdで判定する
+    if (eventId === "333fm" && recordString.length <= 3) {
+      return recordString;
+    }
+
+    const decimal = recordString.slice(-2);
+    const integer = recordString.slice(0, recordString.length - 2);
+    let seconds = Number(integer);
+    if (Number(integer) > 60) {
+      const minutes = Math.floor(Number(integer) / 60);
+      seconds = Number(integer) - minutes * 60;
+      return (
+        String(minutes) + ":" + String(seconds).padStart(2, "0") + "." + decimal
+      );
+    }
+
+    return seconds + "." + decimal;
+  }
+
+  export function queryGQL(
+    graphql: string,
+    variables: { [name: string]: number }
+  ) {
+    const options: GoogleAppsScript.URL_Fetch.URLFetchRequestOptions = {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify({
+        query: graphql,
+        variables,
+      }),
+    };
+
+    const response = UrlFetchApp.fetch(Define.WCA_LIVE_ENDPOINT_URL, options);
+    const json = JSON.parse(response.getContentText());
+    return json;
+  }
 }

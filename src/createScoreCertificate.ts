@@ -1,9 +1,4 @@
-function createScoreCertificateSheet() { // eslint-disable-line
-  const spreadsheetFile: GoogleAppsScript.Drive.File =
-    Service.getFileFromTopFiles(
-      Define.SPREADSHEET_FILE_NAME,
-      Define.DEFAULT_FOLDER_ID
-    );
+function createScoreCertificate() { // eslint-disable-line
   const certificateFolder: GoogleAppsScript.Drive.Folder =
     Service.getFolderFromTopFolders(
       Define.CERTIFICATE_FOLDER_NAME,
@@ -21,18 +16,15 @@ function createScoreCertificateSheet() { // eslint-disable-line
       Define.DEFAULT_FOLDER_ID
     );
 
-  // 存在するカラム数からどの記録証を起こすか策定する
-  const spreadsheet = SpreadsheetApp.openById(spreadsheetFile.getId());
-  const sheet: GoogleAppsScript.Spreadsheet.Sheet | null =
-    spreadsheet.getSheetByName(Define.SPREADSHEET_RESULT_NAME);
-
-  if (sheet == null) {
-    console.log("spreadsheetのresultシートがありません。");
+  const result = Service.getWcaLiveFinalResults();
+  if (result === undefined) {
+    console.log("大会が存在しないか、大会にその種目が存在しません。");
     return;
   }
 
-  // カラム情報を取得し試技回数を抽出し使用する記録証書のスライドを決定する
-  const maxAttempt = Service.getResultAttemptCount(spreadsheetFile.getId());
+  const resultData = result[Define.CERTIFICATE_EVENT_ID];
+
+  const maxAttempt = resultData[0].attempts.length;
 
   const scoreCertificateFile: GoogleAppsScript.Drive.File =
     Service.getFileFromFolder(
@@ -62,8 +54,6 @@ function createScoreCertificateSheet() { // eslint-disable-line
     scoreCertificateFile.makeCopy(outputFolder);
   newFile.setName(fileName);
 
-  const resultData = Service.getResultData(spreadsheetFile.getId());
-
   const removeSlideObjectIds: string[] = [];
 
   const presentation = SlidesApp.openById(newFile.getId());
@@ -75,35 +65,41 @@ function createScoreCertificateSheet() { // eslint-disable-line
   const slideInfo: { [key: string]: GoogleAppsScript.Slides.Slide } = {};
   const competitorIds: string[] = [];
 
-  Object.values(resultData).forEach((value) => {
+  Object.values(resultData).forEach((value: any) => { // eslint-disable-line
     const slide: GoogleAppsScript.Slides.Slide = presentation
       .getSlideById(slideObjectId)
       .duplicate();
     // あとで後ろから順番で追加するのでここでduplicateするものは消すためobjectIdを確保する。
     removeSlideObjectIds.push(slide.getObjectId());
 
-    slideInfo[value["#"]] = slide;
-    competitorIds.push(value["#"]);
+    slideInfo[value.id] = slide;
+    competitorIds.push(value.id);
 
     slide.replaceAllText("competition_name", Define.COMPETITION_NAME);
-    slide.replaceAllText("name", value.Name);
+    slide.replaceAllText("name", value.person.name);
     [...Array(maxAttempt)].forEach(function (_, i) {
-      if (value[String(i + 1)] === "DNF" || value[String(i + 1)] === "DNS") {
-        slide.replaceAllText("solve" + (i + 1), value[String(i + 1)]);
-      } else {
-        slide.replaceAllText(
-          "solve" + (i + 1),
-          Number(value[String(i + 1)]).toFixed(2)
-        );
-      }
+      const record = Service.convertRecord(
+        Define.CERTIFICATE_EVENT_ID,
+        value.attempts[i].result
+      );
+      slide.replaceAllText("solve" + (i + 1), record);
     });
 
     if (maxAttempt === Define.AVERAGE_OF_5_ATTEMPT_COUNT) {
-      slide.replaceAllText("average", value.Average);
+      const average = Service.convertRecord(
+        Define.CERTIFICATE_EVENT_ID,
+        value.average
+      );
+      slide.replaceAllText("average", average);
     } else if (maxAttempt === Define.BEST_OF_3_ATTEMPT_COUNT) {
-      slide.replaceAllText("mean", value.Mean);
+      const average = Service.convertRecord(
+        Define.CERTIFICATE_EVENT_ID,
+        value.average
+      );
+      slide.replaceAllText("mean", average);
     }
-    slide.replaceAllText("best", value.Best);
+    const best = Service.convertRecord(Define.CERTIFICATE_EVENT_ID, value.best);
+    slide.replaceAllText("best", best);
   });
 
   for (const competitorId of competitorIds) {
