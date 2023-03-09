@@ -100,6 +100,10 @@ function createScoreCertificate() { // eslint-disable-line
     }
     const best = Service.convertRecord(Define.CERTIFICATE_EVENT_ID, value.best);
     slide.replaceAllText("best", best);
+
+    const event: string =
+      Define.EVENT_ID_NAME_INFO[Define.CERTIFICATE_EVENT_ID];
+    slide.replaceAllText("event", event);
   });
 
   for (const competitorId of competitorIds) {

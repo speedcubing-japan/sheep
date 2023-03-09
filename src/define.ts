@@ -139,4 +139,24 @@ namespace Define { // eslint-disable-line
   };
   export const SPREADSHEET_RECEPTION_BANDING_THEME =
     SpreadsheetApp.BandingTheme.BLUE;
+
+  export const EVENT_ID_NAME_INFO: { [key: string]: string } = {
+    "333": "3x3x3キューブ",
+    "222": "2x2x2キューブ",
+    "444": "4x4x4キューブ",
+    "555": "5x5x5キューブ",
+    "666": "6x6x6キューブ",
+    "777": "7x7x7キューブ",
+    "333bf": "3x3x3目隠し",
+    "333fm": "3x3x3最小手数",
+    "333oh": "3x3x3片手",
+    clock: "クロック",
+    minx: "メガミンクス",
+    pyram: "ピラミンクス",
+    skewb: "スキューブ",
+    sq1: "スクエア1",
+    "444bf": "4x4x4目隠し",
+    "555bf": "5x5x5目隠し",
+    "333mbf": "3x3x3複数目隠し",
+  };
 }
