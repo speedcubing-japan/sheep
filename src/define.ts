@@ -12,6 +12,9 @@ namespace Define { // eslint-disable-line
   export const WCA_LIVE_COMPETITION_ID = 0;
   // 記録証出力種目
   export const CERTIFICATE_EVENT_ID = "333";
+  // 記録証出力グループ。""と空だと全て出力
+  // 指定されたcompetitor_dayXのグループを参照
+  export const CERTIFICATE_ROUND_ID = "";
 
   // 以下は基本変更不要です
   export const NAME = "sheep";
@@ -30,6 +33,21 @@ namespace Define { // eslint-disable-line
   export const CERTIFICATE_FOLDER_NAME = "certificate";
   export const CERTIFICATE_OUTPUT_FOLDER_NAME = "output_certificate";
   export const SCORE_CERTIFICATE_FILE_NAME = "score_certificate";
+  export const SCORE_CERTIFICATE_SOURCE_STRING_NAME = "val_name";
+  export const SCORE_CERTIFICATE_SOURCE_STRING_EVENT = "val_event";
+  export const SCORE_CERTIFICATE_SOURCE_STRING_COMPETITION_NAME =
+    "val_competition_name";
+  export const SCORE_CERTIFICATE_SOURCE_STRING_SOLVE = "val_solve_";
+  export const SCORE_CERTIFICATE_SOURCE_STRING_AVERAGE = "val_average";
+  export const SCORE_CERTIFICATE_SOURCE_STRING_BEST = "val_best";
+  export const SCORE_CERTIFICATE_SOURCE_STRING_MEAN = "val_mean";
+
+  export const CERTIFICATE_FILE_NAME = "certificate";
+  export const CERTIFICATE_SOURCE_STRING_NAME = "val_name";
+  export const CERTIFICATE_SOURCE_STRING_EVENT = "val_event";
+  export const CERTIFICATE_SOURCE_STRING_RANK = "val_rank";
+  export const CERTIFICATE_SOURCE_STRING_COMPETITION_NAME =
+    "val_competition_name";
 
   export const PDF_OUTPUT_FOLDER_NAME = "output_pdf";
 
@@ -139,6 +157,13 @@ namespace Define { // eslint-disable-line
   };
   export const SPREADSHEET_RECEPTION_BANDING_THEME =
     SpreadsheetApp.BandingTheme.BLUE;
+
+  export const CERTIFICATE_MIN_RANKING = 3;
+  export const CERTIFICATE_RANK_INFO: { [key: string]: string } = {
+    1: "優勝",
+    2: "準優勝",
+    3: "第3位",
+  };
 
   export const EVENT_ID_NAME_INFO: { [key: string]: string } = {
     "333": "3x3x3キューブ",

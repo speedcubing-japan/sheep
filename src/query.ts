@@ -15,6 +15,7 @@ namespace Query {
             id\
             person {\
               id\
+              wcaUserId\
               wcaId\
               name\
             }\

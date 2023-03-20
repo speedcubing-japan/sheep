@@ -16,9 +16,50 @@ function createScoreCertificate() { // eslint-disable-line
       Define.DEFAULT_FOLDER_ID
     );
 
+  // 指定されたイベントIDとラウンドIDから参加した選手のwca_user_idを取得する
+  let wcaUserIds: number[] = [];
+  if (Define.CERTIFICATE_ROUND_ID) {
+    const spreadsheetFile: GoogleAppsScript.Drive.File =
+      Service.getFileFromTopFiles(
+        Define.SPREADSHEET_FILE_NAME,
+        Define.DEFAULT_FOLDER_ID
+      );
+
+    if (spreadsheetFile == null) {
+      console.log("spreadsheetのファイル名がcompetitionではありません");
+      return;
+    }
+
+    const eventRoundId =
+      Define.CERTIFICATE_EVENT_ID + "_" + Define.CERTIFICATE_ROUND_ID;
+    for (let day = 1; day <= Define.HOLDING_DAYS; day++) {
+      const competitorData: { [key: string]: { [key: string]: string } } =
+        Service.getCompetitorData(spreadsheetFile.getId(), day);
+
+      if (Object.keys(competitorData).length === 0) {
+        console.log(day + "日目の競技者データが存在しません。");
+        continue;
+      }
+
+      const userIds = Service.getRoundCompetitorWcaUserIds(
+        eventRoundId,
+        competitorData
+      );
+
+      if (userIds.length) {
+        wcaUserIds = userIds;
+      }
+    }
+  }
+
   const result = Service.getWcaLiveFinalResults();
   if (result === undefined) {
     console.log("大会が存在しないか、大会にその種目が存在しません。");
+    return;
+  }
+
+  if (!Define.CERTIFICATE_EVENT_ID) {
+    console.log("CERTIFICATE_EVENT_IDが指定されていません。");
     return;
   }
 
@@ -37,10 +78,20 @@ function createScoreCertificate() { // eslint-disable-line
     return;
   }
 
-  if (outputFolder != null) {
-    outputFolder.setTrashed(true);
+  const fileNameValues: string[] = [];
+  fileNameValues.push(Define.COMPETITION_NAME);
+  fileNameValues.push(Define.CERTIFICATE_EVENT_ID);
+  if (Define.CERTIFICATE_ROUND_ID) {
+    fileNameValues.push(Define.CERTIFICATE_ROUND_ID);
   }
-  outputFolder = Service.createFolder(Define.CERTIFICATE_OUTPUT_FOLDER_NAME);
+  fileNameValues.push("score_certificate");
+
+  const fileName: string = fileNameValues.join("_");
+  if (outputFolder == null) {
+    outputFolder = Service.createFolder(Define.CERTIFICATE_OUTPUT_FOLDER_NAME);
+  } else {
+    Service.setTrashByFileName(fileName, outputFolder);
+  }
 
   const basePresentation: GoogleAppsScript.Slides.Presentation =
     SlidesApp.openById(scoreCertificateFile.getId());
@@ -49,7 +100,6 @@ function createScoreCertificate() { // eslint-disable-line
     return;
   }
 
-  const fileName: string = Define.COMPETITION_NAME + "_score_certificate";
   const newFile: GoogleAppsScript.Drive.File =
     scoreCertificateFile.makeCopy(outputFolder);
   newFile.setName(fileName);
@@ -66,6 +116,11 @@ function createScoreCertificate() { // eslint-disable-line
   const competitorIds: string[] = [];
 
   Object.values(resultData).forEach((value: any) => { // eslint-disable-line
+
+    if (wcaUserIds.length && !wcaUserIds.includes(value.person.wcaUserId)) {
+      return;
+    }
+
     const slide: GoogleAppsScript.Slides.Slide = presentation
       .getSlideById(slideObjectId)
       .duplicate();
@@ -75,14 +130,23 @@ function createScoreCertificate() { // eslint-disable-line
     slideInfo[value.id] = slide;
     competitorIds.push(value.id);
 
-    slide.replaceAllText("competition_name", Define.COMPETITION_NAME);
-    slide.replaceAllText("name", value.person.name);
+    slide.replaceAllText(
+      Define.SCORE_CERTIFICATE_SOURCE_STRING_COMPETITION_NAME,
+      Define.COMPETITION_NAME
+    );
+    slide.replaceAllText(
+      Define.SCORE_CERTIFICATE_SOURCE_STRING_NAME,
+      value.person.name
+    );
     [...Array(maxAttempt)].forEach(function (_, i) {
       const record = Service.convertRecord(
         Define.CERTIFICATE_EVENT_ID,
         value.attempts[i].result
       );
-      slide.replaceAllText("solve" + (i + 1), record);
+      slide.replaceAllText(
+        Define.SCORE_CERTIFICATE_SOURCE_STRING_SOLVE + (i + 1),
+        record
+      );
     });
 
     if (maxAttempt === Define.AVERAGE_OF_5_ATTEMPT_COUNT) {
@@ -90,20 +154,26 @@ function createScoreCertificate() { // eslint-disable-line
         Define.CERTIFICATE_EVENT_ID,
         value.average
       );
-      slide.replaceAllText("average", average);
+      slide.replaceAllText(
+        Define.SCORE_CERTIFICATE_SOURCE_STRING_AVERAGE,
+        average
+      );
     } else if (maxAttempt === Define.BEST_OF_3_ATTEMPT_COUNT) {
       const average = Service.convertRecord(
         Define.CERTIFICATE_EVENT_ID,
         value.average
       );
-      slide.replaceAllText("mean", average);
+      slide.replaceAllText(
+        Define.SCORE_CERTIFICATE_SOURCE_STRING_MEAN,
+        average
+      );
     }
     const best = Service.convertRecord(Define.CERTIFICATE_EVENT_ID, value.best);
-    slide.replaceAllText("best", best);
+    slide.replaceAllText(Define.SCORE_CERTIFICATE_SOURCE_STRING_BEST, best);
 
     const event: string =
       Define.EVENT_ID_NAME_INFO[Define.CERTIFICATE_EVENT_ID];
-    slide.replaceAllText("event", event);
+    slide.replaceAllText(Define.SCORE_CERTIFICATE_SOURCE_STRING_EVENT, event);
   });
 
   for (const competitorId of competitorIds) {

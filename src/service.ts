@@ -35,6 +35,17 @@ namespace Service { // eslint-disable-line
     return file;
   }
 
+  export function setTrashByFileName(
+    fileName: string,
+    folder: GoogleAppsScript.Drive.Folder
+  ) {
+    const files: GoogleAppsScript.Drive.FileIterator =
+      folder.getFilesByName(fileName);
+    while (files.hasNext()) {
+      files.next().setTrashed(true);
+    }
+  }
+
   export function getFolderFromFolders(
     folderName: string,
     folders: GoogleAppsScript.Drive.FolderIterator
@@ -256,6 +267,23 @@ namespace Service { // eslint-disable-line
       });
     }
     return sum;
+  }
+
+  export function getRoundCompetitorWcaUserIds(
+    eventRoundId: string,
+    competitorData: { [key: string]: { [key: string]: string } }
+  ): number[] {
+    const wcaUserIds: number[] = [];
+    Object.values(competitorData).forEach((value) => {
+      if (!(eventRoundId in value)) {
+        return;
+      }
+
+      if (value[eventRoundId] === String(Define.ENTRY_STRING)) {
+        wcaUserIds.push(Number(value.wca_user_id));
+      }
+    });
+    return wcaUserIds;
   }
 
   export function getCompetitorInfoData(
