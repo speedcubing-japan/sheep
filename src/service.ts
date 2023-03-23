@@ -154,6 +154,56 @@ namespace Service { // eslint-disable-line
     return obj;
   }
 
+  export function getResultData(id: string): { [key: string]: string }[] {
+    const sheet = SpreadsheetApp.openById(id).getSheetByName(
+      Define.SPREADSHEET_RESULT_NAME
+    );
+    if (sheet == null) {
+      return [];
+    }
+    sheet.getDataRange().setNumberFormat("@");
+
+    const rows: string[][] = sheet.getDataRange().getValues();
+    const keys: string[] = rows.splice(0, 1)[0];
+
+    const obj: { [key: string]: string }[] = [];
+    for (const row of rows) {
+      const data: { [key: string]: string } = {};
+      Object.entries(row).forEach(([key, value]) => {
+        const column: string = keys[Number(key)];
+        data[column] = value;
+      });
+      obj.push(data);
+    }
+    return obj;
+  }
+
+  export function getResultAttemptCount(id: string): number {
+    const sheet = SpreadsheetApp.openById(id).getSheetByName(
+      Define.SPREADSHEET_RESULT_NAME
+    );
+    if (sheet == null) {
+      return 0;
+    }
+    sheet.getDataRange().setNumberFormat("@");
+
+    const rows: string[][] = sheet.getDataRange().getValues();
+    const keys: string[] = rows.splice(0, 1)[0];
+
+    const attemptNumbers: number[] = keys.map(parseInt).filter(function (x) {
+      return !isNaN(x);
+    });
+
+    if (attemptNumbers.length <= 0) {
+      return 0;
+    }
+    const arrayMax = function (x: number, y: number) {
+      return Math.max(x, y);
+    };
+
+    return attemptNumbers.reduce(arrayMax);
+  }
+
   export function getRoundData(id: string): {
     [key: string]: { [key: string]: string };
   } {
