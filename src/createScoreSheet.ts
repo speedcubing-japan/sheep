@@ -139,25 +139,61 @@ function createScoreSheet() { // eslint-disable-line
           specificId = "SCJ ID " + value.scj_id;
         }
 
-        slide.replaceAllText("competitor_id", value.id);
-        slide.replaceAllText("specific_id", specificId);
-        slide.replaceAllText("round", roundData[roundId].round_name);
-        slide.replaceAllText("group", roundData[roundId].group_name);
-        slide.replaceAllText("event_name", eventData[eventId].event_name);
-        if (isWCA) {
-          slide.replaceAllText("wca_name", value.name);
-        } else {
-          slide.replaceAllText("rome_name", value.full_name_rome);
-          slide.replaceAllText("full_name", value.full_name);
-        }
-        slide.replaceAllText("kana_name", value.full_name_kana);
         slide.replaceAllText(
-          "sequence",
+          Define.SCORESHEET_SOURCE_STRING_COMPETITOR_ID,
+          value.id
+        );
+        slide.replaceAllText(
+          Define.SCORESHEET_SOURCE_STRING_SPECIFIC_ID,
+          specificId
+        );
+        slide.replaceAllText(
+          Define.SCORESHEET_SOURCE_STRING_ROUND,
+          roundData[roundId].round_name
+        );
+        slide.replaceAllText(
+          Define.SCORESHEET_SOURCE_STRING_GROUP,
+          roundData[roundId].group_name
+        );
+        slide.replaceAllText(
+          Define.SCORESHEET_SOURCE_STRING_EVENT_NAME,
+          eventData[eventId].event_name
+        );
+        if (isWCA) {
+          slide.replaceAllText(
+            Define.SCORESHEET_SOURCE_STRING_WCA_NAME,
+            value.name
+          );
+        } else {
+          slide.replaceAllText(
+            Define.SCORESHEET_SOURCE_STRING_ROME_NAME,
+            value.full_name_rome
+          );
+          slide.replaceAllText(
+            Define.SCORESHEET_SOURCE_STRING_FULL_NAME,
+            value.full_name
+          );
+        }
+        slide.replaceAllText(
+          Define.SCORESHEET_SOURCE_STRING_KANA_NAME,
+          value.full_name_kana
+        );
+        slide.replaceAllText(
+          Define.SCORESHEET_SOURCE_STRING_SEQUENCE,
           "# " + String(roundMemberCount) + "/" + sum[eventRoundId]
         );
-        slide.replaceAllText("competition_name", Define.COMPETITION_NAME);
-        slide.replaceAllText("cutoff_time", eventData[eventId].cutoff_time);
-        slide.replaceAllText("limit_time", eventData[eventId].limit_time);
+        slide.replaceAllText(
+          Define.SCORESHEET_SOURCE_STRING_COMPETITION_NAME,
+          Define.COMPETITION_NAME
+        );
+        slide.replaceAllText(
+          Define.SCORESHEET_SOURCE_STRING_CUTOFF_TIME,
+          eventData[eventId].cutoff_time
+        );
+        slide.replaceAllText(
+          Define.SCORESHEET_SOURCE_STRING_LIMIT_TIME,
+          eventData[eventId].limit_time
+        );
       });
 
       // メンバー数初期化

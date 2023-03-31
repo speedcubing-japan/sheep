@@ -25,6 +25,20 @@ namespace Define { // eslint-disable-line
   export const SPREADSHEET_FILE_NAME = "competition";
   export const SCORESHEET_FOLDER_NAME = "scoresheet";
   export const SCORESHEET_OUTPUT_FOLDER_NAME = "output_scoresheet";
+  export const SCORESHEET_SOURCE_STRING_COMPETITOR_ID = "val_competitor_id";
+  export const SCORESHEET_SOURCE_STRING_SPECIFIC_ID = "val_specific_id";
+  export const SCORESHEET_SOURCE_STRING_ROUND = "val_round";
+  export const SCORESHEET_SOURCE_STRING_GROUP = "val_group";
+  export const SCORESHEET_SOURCE_STRING_EVENT_NAME = "val_event_name";
+  export const SCORESHEET_SOURCE_STRING_WCA_NAME = "val_wca_name";
+  export const SCORESHEET_SOURCE_STRING_ROME_NAME = "val_rome_name";
+  export const SCORESHEET_SOURCE_STRING_FULL_NAME = "val_full_name";
+  export const SCORESHEET_SOURCE_STRING_KANA_NAME = "val_kana_name";
+  export const SCORESHEET_SOURCE_STRING_SEQUENCE = "val_sequence";
+  export const SCORESHEET_SOURCE_STRING_COMPETITION_NAME =
+    "val_competition_name";
+  export const SCORESHEET_SOURCE_STRING_CUTOFF_TIME = "val_cutoff_time";
+  export const SCORESHEET_SOURCE_STRING_LIMIT_TIME = "val_limit_time";
 
   export const NAMESHEET_FILE_NAME = "namesheet";
   export const NAMESHEET_FOLDER_NAME = "namesheet";
