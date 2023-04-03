@@ -287,25 +287,46 @@ namespace Service { // eslint-disable-line
   }
 
   export function getWcaLiveFinalResults() {
-    const results = queryGQL(Query.RESULT, {
+    const results = queryGQL(Query.RESULT_RECORD, {
       id: Define.WCA_LIVE_COMPETITION_ID,
     });
 
-    if (results.data.competition === null) {
-      return undefined;
-    }
+    const personalInfos = getWcaLiveFinalPersonalInfo();
 
     const competitionEvents = results.data.competition.competitionEvents;
     const eventResults: { [name: string]: any } = {}; // eslint-disable-line
     for (const competitionEvent of competitionEvents) {
       for (const competitionRound of competitionEvent.rounds) {
         if (competitionRound.name === "Final") {
+          for (const competitionResult of competitionRound.results) {
+            competitionResult.person = personalInfos[competitionResult.id];
+          }
           eventResults[competitionEvent.event.id] = competitionRound.results;
         }
       }
     }
 
     return eventResults;
+  }
+
+  export function getWcaLiveFinalPersonalInfo() {
+    const results = queryGQL(Query.RESULT_PERSON, {
+      id: Define.WCA_LIVE_COMPETITION_ID,
+    });
+
+    const competitionEvents = results.data.competition.competitionEvents;
+    const personalInfos: { [name: string]: any } = {}; // eslint-disable-line
+    for (const competitionEvent of competitionEvents) {
+      for (const competitionRound of competitionEvent.rounds) {
+        if (competitionRound.name === "Final") {
+          for (const competitionResult of competitionRound.results) {
+            personalInfos[competitionResult.id] = competitionResult.person;
+          }
+        }
+      }
+    }
+
+    return personalInfos;
   }
 
   export function convertRecord(eventId: string, record: number): string {
