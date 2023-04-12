@@ -75,7 +75,7 @@ namespace Define { // eslint-disable-line
   export const SPREADSHEET_ROUND_NAME = "round";
 
   export const SPREADSHEET_ASSIGNMENT_SHEET_NAME = "assignment";
-  export const SPREADSHEET_ASSIGNMENT_SHEET_INDEX = 99; // 基本最後に追加されるように
+  export const SPREADSHEET_ASSIGNMENT_SHEET_INDEX = 999; // 基本最後に追加されるように
   export const SPREADSHEET_ASSIGNMENT_SHEET_HEADER_ROW_NUM = 10;
   export const SPREADSHEET_ASSIGNMENT_WCA_BASE_HEADER_INFO: {
     [key: string]: string;
@@ -110,7 +110,7 @@ namespace Define { // eslint-disable-line
     SpreadsheetApp.BandingTheme.BLUE;
 
   export const SPREADSHEET_RECEPTION_SHEET_NAME = "reception";
-  export const SPREADSHEET_RECEPTION_SHEET_INDEX = 999; // 基本最後に追加されるように
+  export const SPREADSHEET_RECEPTION_SHEET_INDEX = 9999; // 基本最後に追加されるように
   export const SPREADSHEET_RECEPTION_WCA_BASE_HEADER_INFO: {
     [key: string]: string;
   } = {
@@ -157,6 +157,56 @@ namespace Define { // eslint-disable-line
   };
   export const SPREADSHEET_RECEPTION_BANDING_THEME =
     SpreadsheetApp.BandingTheme.BLUE;
+
+  export const RESULT_SHEET_NAME = "result_";
+  export const RESULT_SHEET_INDEX = 99;
+  export const RESULT_SHEET_NAME_COLUMN_INDEX = 2;
+  export const RESULT_SHEET_NAME_SIZE = 200;
+  export const RESULT_BASE_HEADER_BACKGROUND_COLOR = "#000000";
+  export const RESULT_BASE_HEADER_TEXT_COLOR = "#FFFFFF";
+  export const RESULT_BASE_HEADER_INFO: {
+    [attemptNumber: number]: {
+      [key: string]: string;
+    };
+  } = {
+    1: {
+      id: "#",
+      name: "name",
+      wca_user_id: "wca_user_id",
+      solve_1: "1",
+      best: "best",
+    },
+    2: {
+      id: "#",
+      name: "name",
+      wca_user_id: "wca_user_id",
+      solve_1: "1",
+      solve_2: "2",
+      best: "best",
+    },
+    3: {
+      id: "#",
+      name: "name",
+      wca_user_id: "wca_user_id",
+      solve_1: "1",
+      solve_2: "2",
+      solve_3: "3",
+      best: "best",
+      mean: "mean",
+    },
+    5: {
+      id: "#",
+      name: "name",
+      wca_user_id: "wca_user_id",
+      solve_1: "1",
+      solve_2: "2",
+      solve_3: "3",
+      solve_4: "4",
+      solve_5: "5",
+      best: "best",
+      average: "average",
+    },
+  };
 
   export const CERTIFICATE_MIN_RANKING = 3;
   export const CERTIFICATE_RANK_INFO: { [key: string]: string } = {

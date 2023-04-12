@@ -1,4 +1,17 @@
-function createCertificate() { // eslint-disable-line
+function createCertificateFromSheet() { // eslint-disable-line
+  const spreadsheetFile: GoogleAppsScript.Drive.File =
+    Service.getFileFromTopFiles(
+      Define.SPREADSHEET_FILE_NAME,
+      Define.DEFAULT_FOLDER_ID
+    );
+
+  if (spreadsheetFile == null) {
+    console.log(
+      "spreadsheetのファイルが存在しないか名称がcompetitionではありません"
+    );
+    return;
+  }
+
   const certificateFolder: GoogleAppsScript.Drive.Folder =
     Service.getFolderFromTopFolders(
       Define.CERTIFICATE_FOLDER_NAME,
@@ -16,9 +29,9 @@ function createCertificate() { // eslint-disable-line
       Define.DEFAULT_FOLDER_ID
     );
 
-  const result = Service.getWcaLiveFinalResults();
-  if (result === undefined) {
-    console.log("大会が存在しないか、大会にその種目が存在しません。");
+  const result = Service.getResultData(spreadsheetFile.getId());
+  if (Object.keys(result).length === 0) {
+    console.log("結果が存在しません。");
     return;
   }
 
@@ -60,13 +73,12 @@ function createCertificate() { // eslint-disable-line
   const slideObjectId = slide.getObjectId();
   removeSlideObjectIds.push(slideObjectId);
 
-  const slideInfo: { [key: string]: GoogleAppsScript.Slides.Slide } = {};
-  const competitorIds: string[] = [];
+  const slideInfo: GoogleAppsScript.Slides.Slide[] = [];
 
   Object.keys(result).forEach((key) => {
     const resultData = result[key];
     Object.values(resultData).forEach((value: any) => { // eslint-disable-line
-      if (value.ranking > Define.CERTIFICATE_MIN_RANKING) {
+      if (value["#"] > Define.CERTIFICATE_MIN_RANKING) {
         return;
       }
 
@@ -75,16 +87,14 @@ function createCertificate() { // eslint-disable-line
         .duplicate();
       // あとで後ろから順番で追加するのでここでduplicateするものは消すためobjectIdを確保する。
       removeSlideObjectIds.push(slide.getObjectId());
-
-      slideInfo[value.id] = slide;
-      competitorIds.push(value.id);
+      slideInfo.push(slide);
 
       const event: string = Define.EVENT_ID_NAME_INFO[key];
       slide.replaceAllText(Define.SCORE_CERTIFICATE_SOURCE_STRING_EVENT, event);
 
       slide.replaceAllText(
         Define.CERTIFICATE_SOURCE_STRING_RANK,
-        Define.CERTIFICATE_RANK_INFO[value.ranking]
+        Define.CERTIFICATE_RANK_INFO[value["#"]]
       );
 
       slide.replaceAllText(
@@ -93,13 +103,13 @@ function createCertificate() { // eslint-disable-line
       );
       slide.replaceAllText(
         Define.SCORE_CERTIFICATE_SOURCE_STRING_NAME,
-        value.person.name
+        value.name
       );
     });
   });
 
-  for (const competitorId of competitorIds) {
-    presentation.appendSlide(slideInfo[competitorId]);
+  for (const slide of slideInfo) {
+    presentation.appendSlide(slide);
   }
 
   for (const removeSlideObjectId of removeSlideObjectIds) {

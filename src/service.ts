@@ -181,6 +181,40 @@ namespace Service { // eslint-disable-line
     return obj;
   }
 
+  export function getResultData(id: string): {
+    [key: string]: [{ [key: string]: string }];
+  } {
+    const eventData: { [key: string]: { [key: string]: string } } =
+      getEventData(id);
+    const eventIds: string[] = Object.keys(eventData);
+
+    const obj: { [key: string]: [{ [key: string]: string }] } = {};
+    for (const eventId of eventIds) {
+      const sheet = SpreadsheetApp.openById(id).getSheetByName(
+        Define.RESULT_SHEET_NAME + eventId
+      );
+      if (sheet == null) {
+        continue;
+      }
+      // 書式なしテキスト
+      sheet.getDataRange().setNumberFormat("@");
+
+      const rows: string[][] = sheet.getDataRange().getValues();
+      const keys: string[] = rows.splice(0, 1)[0];
+
+      obj[eventId] = [{}];
+      for (const row of rows) {
+        const result: { [key: string]: string } = {};
+        Object.entries(row).forEach(([key, value]) => {
+          result[keys[Number(key)]] = value;
+        });
+        obj[eventId].push(result);
+      }
+      obj[eventId].shift();
+    }
+    return obj;
+  }
+
   // 存在しうるevent_id + _ + round_idのキーを返却する
   export function getEventRoundIds(
     eventIds: string[],
@@ -329,6 +363,17 @@ namespace Service { // eslint-disable-line
     return personalInfos;
   }
 
+  export function convertRecordForInput(
+    eventId: string,
+    record: number
+  ): string {
+    if (eventId === "333mbf") {
+      return "'" + convertRecord(eventId, record);
+    }
+
+    return convertRecord(eventId, record);
+  }
+
   export function convertRecord(eventId: string, record: number): string {
     if (record === 0) {
       return "";
@@ -344,13 +389,15 @@ namespace Service { // eslint-disable-line
     const recordString = String(record);
 
     if (eventId === "333mbf") {
-      const missed = record % 100;
-      const points = 99 - (Math.floor(record / 1e7) % 100);
-      const solved = points + missed;
+      const difference = 99 - Number(String(record).substring(0, 2));
+      let seconds = Number(String(record).substring(2, 7));
+      const missed = Number(String(record).substring(7, 9));
+
+      const solved = difference + missed;
       const attempted = solved + missed;
-      const allSeconds = Math.floor(record / 100) % 1e5;
-      const minutes = Math.floor(allSeconds / 60);
-      const seconds = allSeconds - minutes * 60;
+
+      const minutes = Math.floor(seconds / 60);
+      seconds = seconds - minutes * 60;
 
       return (
         solved +
