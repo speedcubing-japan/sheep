@@ -7,7 +7,7 @@ function createWcaLiveResults() { // eslint-disable-line
 
   if (spreadsheetFile == null) {
     console.log(
-      "spreadsheetのファイルが存在しないか名称がcompetitionではありません"
+      "spreadsheetのファイルが存在しないか名称がcompetitionではありません。"
     );
     return;
   }
@@ -21,6 +21,13 @@ function createWcaLiveResults() { // eslint-disable-line
 
   Object.keys(result).forEach((key) => {
     const resultData = result[key];
+
+    // 記録がないならSkip
+    if (resultData.length === 0) {
+      console.log("WCA Liveに" + key + "のデータがないのでSkipします。");
+      return;
+    }
+
     let sheetIndex = 0;
 
     const sheetName = Define.RESULT_SHEET_NAME + key;
