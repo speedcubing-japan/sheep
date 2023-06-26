@@ -215,6 +215,33 @@ namespace Service { // eslint-disable-line
     return obj;
   }
 
+  export function getFreeData(id: string): [{ [key: string]: string }] {
+    const sheet = SpreadsheetApp.openById(id).getSheetByName(
+      Define.FREE_SHEET_NAME
+    );
+    if (sheet == null) {
+      console.log("freeのシートが存在しません。");
+      return [{}];
+    }
+    // 書式なしテキスト
+    sheet.getDataRange().setNumberFormat("@");
+
+    const rows: string[][] = sheet.getDataRange().getValues();
+    const keys: string[] = rows.splice(0, 1)[0];
+
+    const obj: [{ [key: string]: string }] = [{}];
+    for (const row of rows) {
+      const result: { [key: string]: string } = {};
+      Object.entries(row).forEach(([key, value]) => {
+        result[keys[Number(key)]] = value;
+      });
+      obj.push(result);
+    }
+
+    obj.shift();
+    return obj;
+  }
+
   // 存在しうるevent_id + _ + round_idのキーを返却する
   export function getEventRoundIds(
     eventIds: string[],

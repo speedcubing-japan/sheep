@@ -1,4 +1,4 @@
-function createScoreCertificateFromSheet() { // eslint-disable-line
+function createScoreCertificate() { // eslint-disable-line
   const spreadsheetFile: GoogleAppsScript.Drive.File =
     Service.getFileFromTopFiles(
       Define.SPREADSHEET_FILE_NAME,

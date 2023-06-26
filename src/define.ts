@@ -234,4 +234,8 @@ namespace Define { // eslint-disable-line
     "555bf": "5x5x5目隠し",
     "333mbf": "3x3x3複数目隠し",
   };
+
+  // 自由出力
+  export const FREE_SHEET_NAME = "free";
+  export const FREE_CERTIFICATE_FILE_NAME = "free_certificate";
 }
