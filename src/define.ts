@@ -238,4 +238,6 @@ namespace Define { // eslint-disable-line
   // 自由出力
   export const FREE_SHEET_NAME = "free";
   export const FREE_CERTIFICATE_FILE_NAME = "free_certificate";
+  export const FREE_CERTIFICATE_CHECK_KEY = "CHECK";
+  export const FREE_CERTIFICATE_IGNORE_KEYS: string[] = ["CHECK", "ID"];
 }

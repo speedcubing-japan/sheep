@@ -74,6 +74,11 @@ function createFreeCertificate() { // eslint-disable-line
 
   Object.values(resultData).forEach((value: { [key: string]: string }) => { // eslint-disable-line
 
+    // checkされているものだけ印刷。
+    if (!value[Define.FREE_CERTIFICATE_CHECK_KEY]) {
+      return;
+    }
+
     const slide: GoogleAppsScript.Slides.Slide = presentation
       .getSlideById(slideObjectId)
       .duplicate();
@@ -82,6 +87,10 @@ function createFreeCertificate() { // eslint-disable-line
     slideInfo.push(slide);
 
     Object.keys(value).forEach((key) => {
+      if (Define.FREE_CERTIFICATE_IGNORE_KEYS.includes(key)) {
+        return;
+      }
+
       slide.replaceAllText(key, value[key]);
     });
   });
