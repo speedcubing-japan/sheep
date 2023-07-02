@@ -114,10 +114,17 @@ function createFreeCertificate() { // eslint-disable-line
       existFreeCertificateFile.getId()
     );
 
+    // スライドが存在したら消す
+    const existPresentationSlides = existPresentation.getSlides();
+    for (const slide of existPresentationSlides) {
+      slide.remove();
+    }
+
     for (const slide of slideInfo) {
       existPresentation.appendSlide(slide);
     }
 
+    // 一時ファイルを削除
     presentationFile.setTrashed(true);
   } else {
     for (const slide of slideInfo) {
