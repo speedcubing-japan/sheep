@@ -47,8 +47,6 @@ function createFreeCertificate() { // eslint-disable-line
 
   if (outputFolder == null) {
     outputFolder = Service.createFolder(Define.CERTIFICATE_OUTPUT_FOLDER_NAME);
-  } else {
-    Service.setTrashByFileName(Define.FREE_CERTIFICATE_FILE_NAME, outputFolder);
   }
 
   const basePresentation: GoogleAppsScript.Slides.Presentation =
@@ -58,14 +56,29 @@ function createFreeCertificate() { // eslint-disable-line
     return;
   }
 
-  const newFile: GoogleAppsScript.Drive.File =
-    freeCertificateFile.makeCopy(outputFolder);
-  newFile.setName(Define.FREE_CERTIFICATE_FILE_NAME);
+  const existFreeCertificateFile = Service.getFileFromFolder(
+    Define.FREE_CERTIFICATE_FILE_NAME,
+    outputFolder
+  );
+
+  let isAdd = false;
+  if (existFreeCertificateFile) {
+    isAdd = true;
+  }
 
   const removeSlideObjectIds: string[] = [];
 
-  const presentation = SlidesApp.openById(newFile.getId());
-  // 記録証書は1枚想定。
+  // 新規はそのままコピー、追加の場合リネームしてコピー
+  let presentationFile: GoogleAppsScript.Drive.File;
+  if (isAdd) {
+    // 追加後消すので一時コピー
+    presentationFile = freeCertificateFile.makeCopy();
+  } else {
+    presentationFile = freeCertificateFile.makeCopy(outputFolder);
+    presentationFile.setName(Define.FREE_CERTIFICATE_FILE_NAME);
+  }
+  const presentation = SlidesApp.openById(presentationFile.getId());
+
   const slide: GoogleAppsScript.Slides.Slide = presentation.getSlides()[0];
   const slideObjectId = slide.getObjectId();
   removeSlideObjectIds.push(slideObjectId);
@@ -82,6 +95,7 @@ function createFreeCertificate() { // eslint-disable-line
     const slide: GoogleAppsScript.Slides.Slide = presentation
       .getSlideById(slideObjectId)
       .duplicate();
+
     // あとで後ろから順番で追加するのでここでduplicateするものは消すためobjectIdを確保する。
     removeSlideObjectIds.push(slide.getObjectId());
     slideInfo.push(slide);
@@ -95,12 +109,24 @@ function createFreeCertificate() { // eslint-disable-line
     });
   });
 
-  for (const slide of slideInfo) {
-    presentation.appendSlide(slide);
-  }
+  if (isAdd) {
+    const existPresentation = SlidesApp.openById(
+      existFreeCertificateFile.getId()
+    );
 
-  for (const removeSlideObjectId of removeSlideObjectIds) {
-    presentation.getSlideById(removeSlideObjectId).remove();
+    for (const slide of slideInfo) {
+      existPresentation.appendSlide(slide);
+    }
+
+    presentationFile.setTrashed(true);
+  } else {
+    for (const slide of slideInfo) {
+      presentation.appendSlide(slide);
+    }
+
+    for (const removeSlideObjectId of removeSlideObjectIds) {
+      presentation.getSlideById(removeSlideObjectId).remove();
+    }
   }
 
   console.log(Define.FREE_CERTIFICATE_FILE_NAME + " Complete.");
