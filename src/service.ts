@@ -240,6 +240,32 @@ namespace Service { // eslint-disable-line
     return obj;
   }
 
+  export function setFreeDataCheckBoxOff(id: string): void {
+    const START_ROW = 2;
+
+    const sheet = SpreadsheetApp.openById(id).getSheetByName(
+      Define.FREE_SHEET_NAME
+    );
+    if (sheet == null) {
+      console.log("freeのシートが存在しません。");
+      return;
+    }
+
+    const rows: string[][] = sheet.getDataRange().getValues();
+    const keys: string[] = rows.splice(0, 1)[0];
+    const checkIndex: number = keys.indexOf(Define.FREE_CERTIFICATE_CHECK_KEY);
+
+    if (checkIndex === -1) {
+      console.log(
+        "CHECKの予約語ないためチェックボックス一括オフ機能はskipします。"
+      );
+    }
+
+    sheet
+      .getRange(START_ROW, checkIndex + 1, rows.length, checkIndex + 1)
+      .uncheck();
+  }
+
   // 存在しうるevent_id + _ + round_idのキーを返却する
   export function getEventRoundIds(
     eventIds: string[],

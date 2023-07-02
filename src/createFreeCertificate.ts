@@ -136,5 +136,8 @@ function createFreeCertificate() { // eslint-disable-line
     }
   }
 
+  // 終了したらチェックボックスをOFFにする
+  Service.setFreeDataCheckBoxOff(spreadsheetFile.getId());
+
   console.log(Define.FREE_CERTIFICATE_FILE_NAME + " Complete.");
 }
