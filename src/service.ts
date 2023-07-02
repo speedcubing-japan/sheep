@@ -223,8 +223,6 @@ namespace Service { // eslint-disable-line
       console.log("freeのシートが存在しません。");
       return [{}];
     }
-    // 書式なしテキスト
-    sheet.getDataRange().setNumberFormat("@");
 
     const rows: string[][] = sheet.getDataRange().getValues();
     const keys: string[] = rows.splice(0, 1)[0];
