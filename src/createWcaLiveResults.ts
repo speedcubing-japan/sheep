@@ -22,8 +22,8 @@ function createWcaLiveResults() { // eslint-disable-line
   Object.keys(result).forEach((key) => {
     const resultData = result[key];
 
-    // 記録がないならSkip
-    if (resultData.length === 0) {
+    // 記録がないもしくは、Openされたがレコードがない場合はSkip
+    if (resultData.length === 0 || resultData[0].attempts.length === 0) {
       console.log("WCA Liveに" + key + "のデータがないのでSkipします。");
       return;
     }
