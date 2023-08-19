@@ -355,6 +355,8 @@ namespace Service { // eslint-disable-line
       assignmentName = Define.JUDGE_TEXT;
     } else if (Define.SCRAMBLER_STRINGS.includes(assignmentText)) {
       assignmentName = Define.SCRAMBLER_TEXT;
+    } else if (Define.RUNNER_STRINGS.includes(assignmentText)) {
+      assignmentName = Define.RUNNER_TEXT;
     }
     return assignmentName;
   }

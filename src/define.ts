@@ -54,6 +54,7 @@ namespace Define { // eslint-disable-line
   export const COMPETITOR_TEXT = "競技";
   export const JUDGE_TEXT = "ジャッジ";
   export const SCRAMBLER_TEXT = "スクランブラー";
+  export const RUNNER_TEXT = "ランナー";
 
   export const ENTRY_STRING = 1;
   export const JUDGE_STRINGS: string[] = ["j", "J", Define.JUDGE_TEXT];
@@ -62,6 +63,12 @@ namespace Define { // eslint-disable-line
     "S",
     Define.SCRAMBLER_TEXT,
     "スクランブラ",
+  ];
+  export const RUNNER_STRINGS: string[] = [
+    "r",
+    "R",
+    Define.RUNNER_TEXT,
+    "ランナ",
   ];
 
   export const AVERAGE_OF_5_ATTEMPT_COUNT = 5;
